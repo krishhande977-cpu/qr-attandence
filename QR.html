@@ -243,9 +243,9 @@
   </section>
 
   <section class="section" id="qr-generator">
-    <h2 class="section-title">📌 Generate QR</h2>
+    <h2 class="section-title">📌 Generate Student QR</h2>
     <div class="qr-box">
-      <input type="text" id="sessionInput" placeholder="Enter Session Name or ID" />
+      <input type="text" id="sessionInput" placeholder="Enter Student ID" />
       <button class="btn primary full" onclick="generateQR()">Generate QR Code</button>
       <div id="qrcode"></div>
     </div>
@@ -256,9 +256,11 @@
     
     <div class="action-bar">
         <button class="btn secondary" onclick="verifyLocation()">📍 Verify Location</button>
+        <button class="btn secondary" onclick="startScanning()">📷 Start Scanning</button>
         <button class="btn primary" onclick="downloadCSV()">📥 Download CSV</button>
     </div>
     <span id="locationText"></span>
+    <div id="scanResult" style="margin-top:10px; color:#00d2ff;"></div>
 
     <div class="table-box">
       <table id="attendanceTableMain">
@@ -274,6 +276,7 @@
             </tbody>
       </table>
     </div>
+    <div id="reader" style="margin-top:20px;"></div>
   </section>
 
   <script>
@@ -288,17 +291,17 @@ function generateQR() {
 
   if(input){
 
-    const attendanceLink = "https://krishhande977-cpu.github.io/qr-attandence/abc.html?session=" + input;
+    const qrText = input;
 
     new QRCode(qrDiv,{
-      text: attendanceLink,
+      text: qrText,
       width: 200,
       height: 200
     });
 
   } else {
 
-    alert("Please enter a Session ID");
+    alert("Please enter a Student ID");
 
   }
 
@@ -399,6 +402,48 @@ function generateQR() {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+    }
+
+    // 5. QR Scanner
+    const html5QrCode = new Html5Qrcode("reader");
+
+    function startScanning() {
+      document.getElementById("reader").style.display = "block";
+      Html5Qrcode.getCameras().then(devices => {
+        if (devices && devices.length) {
+          html5QrCode.start(
+            devices[0].id,
+            { fps: 10, qrbox: 250 },
+            qrCodeMessage => {
+              // Mark attendance for scanned student ID
+              const studentId = qrCodeMessage.trim();
+              const name = "Scanned Student";
+              const status = "Present";
+              const time = new Date().toISOString();
+
+              fetch('/attendance', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ studentId, name, status, time })
+              }).then(resp => {
+                if (!resp.ok) throw new Error('Network response not ok');
+                return resp.json();
+              }).then(saved => {
+                addRow(saved);
+                document.getElementById("scanResult").innerText = "✅ Attendance Marked for: " + studentId;
+                document.getElementById("reader").style.display = "none";
+              }).catch(err => {
+                console.error(err);
+                document.getElementById("scanResult").innerText = "❌ Failed to mark attendance for: " + studentId;
+              });
+
+              html5QrCode.stop();
+            }
+          );
+        }
+      }).catch(err => {
+        console.error(err);
+      });
     }
   </script>
 

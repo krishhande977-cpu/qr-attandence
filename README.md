@@ -28,6 +28,8 @@ This project is a static front-end that now includes a Node/Express backend conn
 - The attendance form now sends a `POST` request to `/attendance` instead of manipulating local state.
 - Existing attendance entries are fetched (`GET /attendance`) on page load and displayed in the dashboard table.
 - CSV download still works from DOM data.
+- QR codes are generated for student IDs (not session links).
+- Scanning a QR code (via the "Start Scanning" button) automatically marks attendance for the scanned student ID.
 
 ## NeonDB Integration
 
@@ -37,8 +39,10 @@ This project is a static front-end that now includes a Node/Express backend conn
 ## Usage
 
 1. Open `http://localhost:3000/QR.html` after starting the server.
-2. Mark attendance using the form or by scanning QR codes.
-3. Records are persisted in NeonDB and reloaded when the page refreshes.
+2. Generate QR codes for student IDs.
+3. Students show their QR codes; use "Start Scanning" to scan and mark attendance automatically.
+4. Alternatively, use the form for manual entry or visit `abc.html` for online marking.
+5. Records are persisted in NeonDB and reloaded when the page refreshes.
 
 ---
 

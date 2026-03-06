@@ -111,21 +111,21 @@ alert("Fill all fields");
 return;
 }
 
-let attendance = JSON.parse(localStorage.getItem("attendance")) || [];
+const time = new Date().toISOString();
 
-const record={
-subject,
-studentId,
-name,
-status,
-time:new Date().toLocaleString()
-};
-
-attendance.push(record);
-
-localStorage.setItem("attendance",JSON.stringify(attendance));
-
-alert("Attendance Saved");
+fetch('/attendance', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ studentId, name, status, time })
+}).then(resp => {
+  if (!resp.ok) throw new Error('Network response not ok');
+  return resp.json();
+}).then(saved => {
+  alert("Attendance Saved");
+}).catch(err => {
+  console.error(err);
+  alert("Failed to save attendance");
+});
 
 }
 
