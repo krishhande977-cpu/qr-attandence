@@ -303,20 +303,52 @@ function generateQR() {
   }
 
 }
-    // 2. Attendance Logic
-    document.getElementById('attendanceForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const id = document.getElementById('studentId').value;
-      const name = document.getElementById('Name').value;
-      const status = document.getElementById('status').value;
-      const time = new Date().toLocaleString();
-
+    // 2. Attendance Logic (send to backend)
+    function addRow(record) {
       const tableBody = document.getElementById('attendanceTableBody');
-      const row = `<tr><td>${id}</td><td>${name}</td><td>${status}</td><td>${time}</td></tr>`;
+      const timeString = record.timestamp
+        ? new Date(record.timestamp).toLocaleString()
+        : new Date().toLocaleString();
+      const row = `<tr><td>${record.student_id || record.studentId}</td><td>${record.name}</td><td>${record.status}</td><td>${timeString}</td></tr>`;
       tableBody.innerHTML += row;
-      
-      alert("✅ Attendance Marked!");
-      this.reset();
+    }
+
+    document.getElementById('attendanceForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const id = document.getElementById('studentId').value.trim();
+      const name = document.getElementById('Name').value.trim();
+      const status = document.getElementById('status').value;
+      const time = new Date().toISOString();
+
+      if (!id) return;
+
+      try {
+        const resp = await fetch('/attendance', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ studentId: id, name, status, time })
+        });
+        if (!resp.ok) throw new Error('Network response was not ok');
+        const saved = await resp.json();
+        addRow(saved);
+        alert("✅ Attendance Marked!");
+        this.reset();
+      } catch (err) {
+        console.error(err);
+        alert('Failed to save attendance');
+      }
+    });
+
+    // load existing attendance when dashboard becomes visible or on page load
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const resp = await fetch('/attendance');
+        if (!resp.ok) throw new Error('Failed to fetch records');
+        const data = await resp.json();
+        data.forEach(addRow);
+      } catch (err) {
+        console.error('could not load records', err);
+      }
     });
 
     // 3. Geolocation Verification
@@ -371,4 +403,4 @@ function generateQR() {
   </script>
 
 </body>
-</html> ths qr code is genetrate now and open the abc.html page now
+</html>
