@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Attend | Intelligence Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #020617;
+            --glass: rgba(15, 23, 42, 0.7);
+            --accent: #38bdf8;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --text: #f8fafc;
+            --subtext: #94a3b8;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at bottom right, #111827, #020617);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+            padding-top: 20px;
+        }
+
+        /* --- Back Button Styling --- */
+        .back-nav {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--subtext);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 0;
+        }
+
+        .back-nav:hover {
+            color: var(--accent);
+            transform: translateX(-5px);
+        }
+
+        .back-nav svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* --- Layout Elements --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 30px;
+        }
+
+        .glass-panel {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px 20px;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid transparent;
+            transition: 0.3s;
+        }
+
+        .critical { border-left-color: var(--danger); }
+        .warning { border-left-color: var(--warning); }
+
+        .student-info { flex-grow: 1; }
+        .student-name { display: block; font-weight: 700; font-size: 15px; }
+        .stats-label { font-size: 12px; color: var(--subtext); }
+
+        .percentage {
+            font-size: 18px;
+            font-weight: 800;
+            min-width: 60px;
+            text-align: right;
+        }
+
+        .btn-notify {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-notify:hover {
+            background: var(--accent);
+            color: #020617;
+        }
+
+        .automation-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: rgba(56, 189, 248, 0.05);
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(56, 189, 248, 0.1);
+        }
+
+        /* --- Toggle Switch --- */
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #334155;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px; width: 16px;
+            left: 4px; bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--accent); }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="QR attandance system/features1.html" class="back-nav">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to Dashboard
+    </a>
+
+    <div class="header">
+        <div>
+            <h1 style="margin:0; font-size: 28px; letter-spacing: -0.5px;">Smart Alerts</h1>
+            <p style="margin:0; color:var(--subtext); font-size: 14px;">Automated Attendance Intervention</p>
+        </div>
+        <div style="text-align: right;">
+            <span style="font-size: 12px; color:var(--subtext); text-transform: uppercase; font-weight: 700;">Threshold</span>
+            <div style="font-size: 24px; font-weight: 800; color:var(--danger);">75%</div>
+        </div>
+    </div>
+
+    <div class="automation-bar">
+        <span><b style="color: var(--accent);">Auto-Notify Guardians</b> <span style="font-size: 13px; color: var(--subtext); margin-left: 8px;">(Sends alert when below threshold)</span></span>
+        <label class="toggle">
+            <input type="checkbox" checked>
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="glass-panel">
+        <h3 style="margin-top:0; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color:var(--danger); margin-bottom: 20px;">Action Required: Critical Low</h3>
+        
+        <div class="alert-item critical">
+            <div class="student-info">
+                <span class="student-name">AYUSH RAJENDRA DAHAKE</span>
+                <span class="stats-label">Last seen: 4 days ago | Missed 3 Labs</span>
+            </div>
+            <div class="percentage" style="color: var(--danger);">62%</div>
+            <button class="btn-notify" onclick="this.innerText='Sent ✅'; this.style.borderColor='transparent'">Notify</button>
+        </div>
+
+        <div class="alert-item critical">
+            <div class="student-info">
+                <span class="student-name">SAMYAK NEERAJ DONGRE</span>
+                <span class="stats-label">Last seen: 2 days ago | Missed 2 Lectures</span>
+            </div>
+            <div class="percentage" style="color: var(--danger);">68%</div>
+            <button class="btn-notify" onclick="this.innerText='Sent ✅'; this.style.borderColor='transparent'">Notify</button>
+        </div>
+    </div>
+
+    <div class="glass-panel">
+        <h3 style="margin-top:0; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color:var(--warning); margin-bottom: 20px;">Early Warning: Approaching Threshold</h3>
+        
+        <div class="alert-item warning">
+            <div class="student-info">
+                <span class="student-name">VANSH MAHENDRA GAIKWAD</span>
+                <span class="stats-label">Current: 74% | Needs 1 class to recover</span>
+            </div>
+            <div class="percentage" style="color: var(--warning);">74%</div>
+            <button class="btn-notify" onclick="this.innerText='Sent ✅'; this.style.borderColor='transparent'">Notify</button>
+        </div>
+        
+        <div class="alert-item warning">
+            <div class="student-info">
+                <span class="student-name">RITIK SEVAKRAM KADU</span>
+                <span class="stats-label">Current: 72% | Missed today's DAA lecture</span>
+            </div>
+            <div class="percentage" style="color: var(--warning);">72%</div>
+            <button class="btn-notify" onclick="this.innerText='Sent ✅'; this.style.borderColor='transparent'">Notify</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

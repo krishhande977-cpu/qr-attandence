@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Attend | Smart Attendance System </title>
+  
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+
+  <style>
+    /* --- Modern Tech Theme & Reset --- */
+    :root {
+      --primary-glow: #00d2ff;
+      --secondary-glow: #3a7bd5;
+      --accent-yellow: #fff9a0;
+      --bg-dark: #0f172a;
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --success: #4ade80;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%);
+      color: white;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* --- Animations --- */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes titleGlow {
+      from { text-shadow: 0 0 10px #fff, 0 0 20px var(--accent-yellow); }
+      to { text-shadow: 0 0 20px #fff, 0 0 40px var(--accent-yellow); }
+    }
+
+    /* --- Navbar --- */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 5%;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-badge { background: var(--primary-glow); padding: 5px 10px; border-radius: 8px; font-weight: bold; color: #000; }
+
+    .navLinks a { color: white; text-decoration: none; margin-left: 25px; font-weight: 500; transition: 0.3s; }
+    .navLinks a:hover { color: var(--primary-glow); }
+
+    /* --- Hero Section --- */
+    .hero {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 100px 5%;
+      gap: 50px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-content { flex: 1; min-width: 300px; }
+    .hero-content h1 { font-size: 3rem; line-height: 1.2; margin-bottom: 20px; }
+    .hero-content span { color: var(--primary-glow); }
+
+    .hero-card {
+      background: (var(--glass));
+      padding: 30px;
+      border-radius: 24px;
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(15px);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    /* --- Features Grid --- */
+    .section { padding: 80px 5%; text-align: center; }
+    
+    .section-title {
+      font-size: 2.5rem;
+      margin-bottom: 50px;
+      color: #fff;
+      animation: titleGlow 2s ease-in-out infinite alternate;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 35px;
+      text-align: left;
+      transition: all 0.3s ease;
+      animation: float 5s ease-in-out infinite;
+    }
+
+    .card:hover {
+      transform: translateY(-10px) scale(1.02);
+      border-color: var(--primary-glow);
+      box-shadow: 0 10px 40px rgba(0, 210, 255, 0.2);
+    }
+
+    .card h3 { color: var(--primary-glow); margin-bottom: 15px; font-size: 1.4rem; }
+    .card p { color: #cbd5e1; font-size: 0.95rem; }
+
+    /* --- Form & Buttons --- */
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: white;
+    }
+
+    .btn {
+      padding: 12px 25px;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-block;
+      font-weight: bold;
+      transition: 0.3s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .primary { background: var(--primary-glow); color: #000; }
+    .primary:hover { box-shadow: 0 0 20px var(--primary-glow); }
+    .secondary { background: var(--glass); color: white; border: 1px solid var(--glass-border); margin-right: 10px;}
+    .secondary:hover { background: rgba(255,255,255,0.1); }
+    .full { width: 100%; margin-top: 10px; }
+
+    /* --- Action Bar --- */
+    .action-bar {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 25px;
+      gap: 15px;
+    }
+
+    #locationText {
+      display: block;
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: var(--success);
+    }
+
+    /* --- Table styling --- */
+    .table-box { overflow-x: auto; margin-top: 10px; }
+    table { width: 100%; border-collapse: collapse; background: var(--glass); border-radius: 15px; overflow: hidden; }
+    th, td { padding: 15px; border-bottom: 1px solid var(--glass-border); text-align: left; }
+    th { background: rgba(255, 255, 255, 0.1); color: var(--primary-glow); }
+
+    .qr-box {
+        background: var(--glass);
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 500px;
+        margin: 0 auto;
+        border: 1px solid var(--glass-border);
+    }
+
+    #qrcode img { margin: 20px auto; border: 10px solid white; border-radius: 10px; }
+
+  </style>
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="logo">
+      <span class="logo-badge">QR</span>
+      <h2>QR Attend</h2>
+    </div>
+    <nav class="navLinks">
+      <a href="login.html">login</a>
+      <a href="QR.html">Home</a>
+      <a href="features1.html">Features</a>
+      <a href="how-it-work.html">How-it-Works</a>
+      <a href="dashboard.html">Dashboard</a>
+    </nav>
+  </header>
+
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <h1>QR Code Based <span>Smart Attendance</span> System</h1>
+      <p>Fast, secure, paperless, and accurate. Mark attendance in seconds.</p>
+      <div style="margin-top: 30px;">
+        <a class="btn primary" href="QR.html">Open Dashboard</a>
+      </div>
+    </div>
+
+    <div class="hero-card">
+      <h3>Quick Attendance</h3>
+      <form id="attendanceForm">
+        <input type="text" id="studentId" placeholder="Enter Student ID" required />
+        <input type="text" id="Name" placeholder="Name" required />
+        <select id="status">
+          <option value="Present">Present</option>
+          <option value="Absent">Absent</option>
+        </select>
+        <button type="submit" class="btn primary full">Mark Attendance</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="section" id="features">
+    <h2 class="section-title">✨ System Features</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>📷 QR Scan</h3>
+        <p>Scan QR code and mark attendance automatically with geolocation validation.</p>
+      </div>
+      <div class="card">
+        <h3>🧾 Reports</h3>
+        <p>Download professional attendance reports in Excel / PDF format instantly.</p>
+      </div>
+      <div class="card">
+        <h3>👨‍🏫 Teacher Panel</h3>
+        <p>Teachers can generate dynamic QR codes and manage class sessions live.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="qr-generator">
+    <h2 class="section-title">📌 Generate QR</h2>
+    <div class="qr-box">
+      <input type="text" id="sessionInput" placeholder="Enter Session Name or ID" />
+      <button class="btn primary full" onclick="generateQR()">Generate QR Code</button>
+      <div id="qrcode"></div>
+    </div>
+  </section>
+
+  <section class="section" id="dashboard">
+    <h2 class="section-title">📊 Dashboard</h2>
+    
+    <div class="action-bar">
+        <button class="btn secondary" onclick="verifyLocation()">📍 Verify Location</button>
+        <button class="btn primary" onclick="downloadCSV()">📥 Download CSV</button>
+    </div>
+    <span id="locationText"></span>
+
+    <div class="table-box">
+      <table id="attendanceTableMain">
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Date & Time</th>
+          </tr>
+        </thead>
+        <tbody id="attendanceTableBody">
+            </tbody>
+      </table>
+    </div>
+  </section>
+
+  <script>
+    // 1. QR Generation
+function generateQR() {
+
+  const input = document.getElementById('sessionInput').value;
+  const qrDiv = document.getElementById('qrcode');
+
+  // Clear previous QR
+  qrDiv.innerHTML = "";
+
+  if(input){
+
+    const attendanceLink = "https://yourwebsite.com/attendance.html?session=" + input;
+
+    new QRCode(qrDiv,{
+      text: attendanceLink,
+      width: 200,
+      height: 200
+    });
+
+  } else {
+
+    alert("Please enter a Session ID");
+
+  }
+
+}
+    // 2. Attendance Logic
+    document.getElementById('attendanceForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const id = document.getElementById('studentId').value;
+      const name = document.getElementById('Name').value;
+      const status = document.getElementById('status').value;
+      const time = new Date().toLocaleString();
+
+      const tableBody = document.getElementById('attendanceTableBody');
+      const row = `<tr><td>${id}</td><td>${name}</td><td>${status}</td><td>${time}</td></tr>`;
+      tableBody.innerHTML += row;
+      
+      alert("✅ Attendance Marked!");
+      this.reset();
+    });
+
+    // 3. Geolocation Verification
+    function verifyLocation() {
+      const locDisplay = document.getElementById('locationText');
+      if (navigator.geolocation) {
+        locDisplay.innerText = "Scanning coordinates...";
+        navigator.geolocation.getCurrentPosition((position) => {
+          const lat = position.coords.latitude.toFixed(4);
+          const long = position.coords.longitude.toFixed(4);
+          locDisplay.innerText = `✅ Verified Location: Lat ${lat}, Long ${long}`;
+        }, () => {
+          alert("Unable to retrieve location. Please enable GPS.");
+          locDisplay.innerText = "❌ Location Verification Failed";
+        });
+      } else {
+        alert("Geolocation is not supported by this browser.");
+      }
+    }
+
+    // 4. Download Table as CSV
+    function downloadCSV() {
+      const table = document.getElementById("attendanceTableMain");
+      let csv = [];
+      
+      // Get Headers
+      const headers = Array.from(table.querySelectorAll("th")).map(th => th.innerText);
+      csv.push(headers.join(","));
+
+      // Get Rows
+      const rows = table.querySelectorAll("tbody tr");
+      if (rows.length === 0) {
+        alert("No data available to download!");
+        return;
+      }
+
+      rows.forEach(row => {
+        const rowData = Array.from(row.querySelectorAll("td")).map(td => td.innerText);
+        csv.push(rowData.join(","));
+      });
+
+      // Create File
+      const csvContent = "data:text/csv;charset=utf-8," + csv.join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "attendance_report.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+
+</body>
+</html> ths qr code is genetrate now and open the abc.html page now

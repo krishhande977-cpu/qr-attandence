@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Attend | Premium Reports</title>
+    <style>
+        :root {
+            --bg: #030712;
+            --glass: rgba(30, 41, 59, 0.7);
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.3);
+            --text: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at top left, #1e1b4b, #030712);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        nav {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .back-btn { color: var(--accent); text-decoration: none; font-weight: 600; font-size: 14px; }
+
+        .glass-panel {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            align-items: end;
+        }
+
+        .field-group { display: flex; flex-direction: column; gap: 8px; }
+        label { font-size: 12px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+
+        select, input {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px;
+            border-radius: 10px;
+            color: white;
+            transition: 0.3s;
+        }
+
+        select:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 10px var(--accent-glow); }
+
+        .btn-action {
+            background: var(--accent);
+            color: #030712;
+            font-weight: 700;
+            border: none;
+            padding: 13px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 5px 15px var(--accent-glow); }
+
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        th { padding: 15px; text-align: left; color: #64748b; font-size: 13px; }
+        
+        tr { transition: 0.3s; }
+        td { 
+            background: rgba(30, 41, 59, 0.4); 
+            padding: 15px; 
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        td:first-child { border-radius: 12px 0 0 12px; border-left: 1px solid rgba(255,255,255,0.05); }
+        td:last-child { border-radius: 0 12px 12px 0; border-right: 1px solid rgba(255,255,255,0.05); }
+
+        tr:hover td { background: rgba(56, 189, 248, 0.1); border-color: var(--accent); }
+
+        .status-pill {
+            background: rgba(74, 222, 128, 0.1);
+            color: #4ade80;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+
+        @media print {
+            body { background: white; color: black; }
+            .glass-panel, nav { display: none !important; }
+            td { background: white !important; color: black; border: 1px solid #ddd; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <nav>
+        <a href="QR attandance system/features1.html" class="back-btn">← Back to Dashboard </a>
+        <div style="display: flex; gap: 12px;">
+            <button onclick="downloadExcel()" class="btn-action" style="background: #10b981;">EXCEL</button>
+            <button onclick="window.print()" class="btn-action" style="background: #f1f5f9;">PRINT PDF</button>
+        </div>
+    </nav>
+
+    <div class="glass-panel">
+        <div class="grid-inputs">
+            <div class="field-group">
+                <label>Student Name</label>
+                <select id="stuName">
+                    <option value="">Search Student...</option>
+                    <option>SHRAWANI PRAFUL AHIRKAR</option>
+                    <option>AKANSHA ANILRAO AMBADKAR</option>
+                    <option>JANVI VINOD AMTE</option>
+                    <option>VANSH RAVINDRA ANTURKAR</option>
+                    <option>SHRUTI RAJU ASUTKAR</option>
+                    <option>DAYAKAR ANKULU ATKURI</option>
+                    <option>PRACHI DAYAL BABHARE</option>
+                    <option>JAYESH DHANRAJ BADWAIK</option>
+                    <option>MANSI BANSOD</option>
+                    <option>VANSH TILAK BHAGAT</option>
+                    <option>RUCHI PARAG BHAISARE</option>
+                    <option>YASHASVI SANDESH BHAMBORE</option>
+                    <option>SANSKRUTI CHANDRAKANT BHISE</option>
+                    <option>CHETAN PRAMODRAO BHIVGADE</option>
+                    <option>SWAYAM JITENDRA BHOPE</option>
+                    <option>VEDIKA DIGAMBAR BHOYAR</option>
+                    <option>YASHASVI SUDHAKAR BHOYAR</option>
+                    <option>PRACHI SUNIL BHUSHANWAR</option>
+                    <option>PRATIK DILIP BIRADAR</option>
+                    <option>MRU0L ASHWIN BORKAR</option>
+                    <option>ROMIL VIJAY BURILE</option>
+                    <option>ROHIT GANESH CHAVAN</option>
+                    <option>SUJIT GANESH CHAVHAN</option>
+                    <option>HARSHAL ISHWARDAYAL CHOUHAN</option>
+                    <option>AYUSH RAJENDRA DAHAKE</option>
+                    <option>SAI SUHAS DESHPANDE</option>
+                    <option>PRANJALI HARSHWARDHAN DHABRE</option>
+                    <option>ANIKET WASUDEV DHAVLE</option>
+                    <option>KHUSHI DILIP DHOBLE</option>
+                    <option>SHREYASH KHUSHAL DHOTE</option>
+                    <option>BHUSHAN SAHASRAM DONGARWAR</option>
+                    <option>SAMYAK NEERAJ DONGRE</option>
+                    <option>VANSH MAHENDRA GAIKWAD</option>
+                    <option>MA0SVI SURESH GAJBHIYE</option>
+                    <option>SHUJAL SUNIL GAJBHIYE</option>
+                    <option>YASH RASHTRAPAL GEDAM</option>
+                    <option>SAHIL VIJAY GOHANE</option>
+                    <option>GUNJAN RAMESH GUDADE</option>
+                    <option>PIYUSH PADMAKAR GUDHE</option>
+                    <option>TANMAY RAMESH HADGE</option>
+                    <option>YOGESH JITENDRA HANDE</option>
+                    <option>VIBHANSHU VIJAYRAO HARSHE</option>
+                    <option>DHA0NJAY RAVINDRA HATEKAR</option>
+                    <option>VAISHA0VI ISHWARJI HATWAR</option>
+                    <option>VISHAL SUDHIR IJMULWAR</option>
+                    <option>BHOOMI PRAVINRAO INGALE</option>
+                    <option>RUCHIKA RAMAJI INGOLE</option>
+                    <option>ARYAN PRAMOD ITANKAR</option>
+                    <option>SHUBHAM RAJESH JAGTAP</option>
+                    <option>MA0S SURESH JOGI</option>
+                    <option>RITIK SEVAKRAM KADU</option>
+                    <option>RAJVEER ADESH KALMEGH</option>
+                    <option>ANJALI ATUL KALODE</option>
+                    <option>KARTIK HARIRAM PAWAR</option>
+                    <option>KARTIK FAGALAL KATRE</option>
+                    <option>RUSHIKESH SURENDRA KAWADKAR</option>
+                    <option>YUKTI SHYAM KHAPEKAR</option>
+                    <option>SAGAR VINOD KHARBIKAR</option>
+                    <option>MOHIT RUPCHAND KHARWADE</option>
+                    <option>PRANITA PRAMODRAO KHOBE</option>
+                    <option>VAIBHAV GHANSHYAM KHODAKE</option>
+                    <option>VAIBHAV DILIPRAO KSHIRSAGAR</option>
+                    <option>BHUMIKA DEVIDASJI KUKDE</option>
+                    <option>PAYAL TULSHIRAM KUMARE</option>
+                    <option>BHUMIKA RAJENDRA KUMBHARE</option>
+                    <option>YASH OMPRAKASH KUNDLE</option>
+                    <option>OM SANJAY LAKHAKWAR</option>
+                    <option>ANUJ VINOD LAKHEKAR</option>
+                    <option>MITESHA RAJKUMAR LINGAYAT</option>
+                    <option>MA0SWI GAJA0N LODAM</option>
+                    <option>TANVI CHANDRAMANI LOKHANDE</option>
+                    <option>CHAITANYA MADAVI</option>
+                    <option>RUSHIKESH SHAMRAV MADAVI</option>
+                    <option>MEHAK SARANG MAHADULE</option>
+                    <option>SHRAVANI VIJAY MAHURE</option>
+                    <option>SRUSHTI PRASHANT MANDEKAR</option>
+                    <option>CHIRAG CHANDRAKIRAN MESHRAM</option>
+                    <option>SAKSHAM RAJESH MESHRAM</option>
+                    <option>VRUSHALI SHYAMSUNDAR MILKE</option>
+                    <option>ADVAIT DINESH MISHRA</option>
+                    <option>DIVYA JAYKUMAR MISHRA</option>
+                    <option>HITESH MISHRA</option>
+                    <option>PRASHANT BISENDRA MISHRA</option>
+                    <option>SAURABH MOHADIKAR</option>
+                    <option>VIVEK SANJIV MOHOD</option>
+                    <option>ANUSHKA PRAMOD MOON</option>
+                    <option>SAURABH BHOLA MUKHERJEE</option>
+                    <option>HARSHADA PANDURANG MULE</option>
+                    <option>SHRUTI SIDDHARTH MUNESHWAR</option>
+                    <option>SHIWANG BUDHRAO 0GLE</option>
+                    <option>KOMAL KONDBA BORKAR</option>
+                    <option>HARSHAL DILIPRAO DAFE</option>
+                    <option>TEJAL PARAMESHWAR DHAGDI</option>
+                    <option>DNYANESHWAR SHANKARRAO BOKDE</option>
+                    <option>GANGADHAR SURESH BHISADE</option>
+                    <option>KALYANI BHIMRAO GAWALI</option>
+                    <option>AMAN KISHOR JADHAO</option>
+                    <option>TANISHA SHAILESH JAIN</option>
+                    <option>SHIVAM PARMESHWAR JAWANJAL</option>
+                    <option>GAURI GIRIDHAR KAWALGADDE</option>
+                </select>
+            </div>
+            <div class="field-group">
+                <label>Subject</label>
+                <select id="subject">
+                    <option>Formal Languages & Automata Theory(CS4T001)</option>
+                <option>Design & Analysis of Algorithms(CS4T002)</option>
+                <option>Foundation of Large Language Model(CS4M002)</option>
+                <option>Business Data Processing(AI4O018)</option>
+                <option>Graph Theory(BS4O010)</option>
+                <option>Disaster Management(CE4O011)</option>
+                <option>Ethical Hacking(CS4O015)</option>
+                <option>German Language(DS4O017)</option>
+                <option>Japanese Language(IT4O016)</option>
+                <option>Green Energy(EE4O012)</option>
+                <option>Industry 4.0(ME4O013)</option>  
+                <option>Digital Marketing(ET4O014)</option>
+                <option>Management Application Software(CS4H002)</option>
+                <option>JDCAP-2(CSV002)</option>
+                <option>UI/UX Lab(CS4L001)</option>
+                <option>DAA Lab(CS4T002)</option>
+                <option>Data Analytics(CS4L003)</option>
+                <option>Mini Project(CS4P002)</option>  
+                </select>
+            </div>
+            <button class="btn-action" onclick="addEntry()">LOG ATTENDANCE</button>
+        </div>
+    </div>
+
+    <div class="glass-panel table-wrap">
+        <table id="attendanceTable">
+            <thead>
+                <tr>
+                    <th>STUDENT NAME</th>
+                    <th>SUBJECT</th>
+                    <th>TIME LOG</th>
+                    <th>LOCATION</th>
+                    <th>STATUS</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function addEntry() {
+        const name = document.getElementById('stuName').value;
+        const sub = document.getElementById('subject').value;
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        if(!name) { alert("Please select a student name!"); return; }
+
+        const table = document.getElementById('attendanceTable').getElementsByTagName('tbody')[0];
+        const row = table.insertRow(0); 
+        row.style.opacity = "0";
+        
+        row.innerHTML = `
+            <td style="font-weight:700">${name}</td>
+            <td style="color:#94a3b8">${sub}</td>
+            <td>${time}</td>
+            <td style="color:#38bdf8">📍 Nagpur, IN</td>
+            <td><span class="status-pill">PRESENT</span></td>
+        `;
+
+        setTimeout(() => { row.style.opacity = "1"; row.style.transition = "0.5s"; }, 10);
+    }
+
+    function downloadExcel() {
+        let csv = [];
+        const rows = document.querySelectorAll("table tr");
+        for (let i = 0; i < rows.length; i++) {
+            let row = [], cols = rows[i].querySelectorAll("td, th");
+            for (let j = 0; j < cols.length; j++) row.push('"' + cols[j].innerText + '"');
+            csv.push(row.join(","));        
+        }
+        const blob = new Blob([csv.join("\n")], { type: "text/csv" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "Attendance_Master_2026.csv";
+        link.click();
+    }
+</script>
+
+</body>
+</html>

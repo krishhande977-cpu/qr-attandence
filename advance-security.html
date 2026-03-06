@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Attend | Hardened Security</title>
+    <style>
+        :root {
+            --bg: #050505;
+            --panel: #0f1115;
+            --accent: #00ff41;
+            --danger: #ff003c;
+            --border: #222;
+            --text: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Space Grotesk', 'Courier New', monospace;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        .header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .module-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            padding: 25px;
+            position: relative;
+        }
+
+        .module-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--accent);
+        }
+
+        h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin: 0 0 20px 0; }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .desc { font-size: 12px; color: #666; margin-top: 4px; }
+
+        .btn-toggle {
+            background: #1a1a1a;
+            border: 1px solid var(--border);
+            color: white;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 900;
+        }
+
+        .btn-toggle.on { background: var(--accent); color: black; border-color: var(--accent); }
+
+        .terminal-log {
+            background: #000;
+            padding: 15px;
+            font-size: 11px;
+            color: #00ff41;
+            height: 150px;
+            overflow-y: auto;
+            border: 1px solid #1a1a1a;
+            margin-top: 20px;
+        }
+
+        .threat { color: var(--danger); font-weight: bold; }
+
+        .btn-lockdown {
+            width: 100%;
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 15px;
+            margin-top: 30px;
+            font-weight: 800;
+            cursor: pointer;
+            clip-path: polygon(0 0, 100% 0, 100% 80%, 95% 100%, 0 100%);
+            transition: 0.3s;
+        }
+
+        .btn-lockdown:hover { background: white; color: var(--danger); }
+
+        /* --- NEW BACK BUTTON STYLE --- */
+        .back-nav {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .btn-back {
+            color: #444;
+            text-decoration: none;
+            font-size: 11px;
+            letter-spacing: 2px;
+            font-weight: 900;
+            padding: 10px 20px;
+            border: 1px solid transparent;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-back:hover {
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            background: rgba(0, 255, 65, 0.05);
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div>
+            <h1 style="margin:0; font-weight: 300;">CORE_SECURITY_VAULT</h1>
+            <span style="font-size: 10px; color: #666;">STATUS: ENCRYPTED // NODE: NIT-NAGPUR-01</span>
+        </div>
+        <button onclick="location.href='teacher.html'" style="background:transparent; border:1px solid #444; color:#888; padding:8px 15px; cursor:pointer;">EXIT_SECURE_ZONE</button>
+    </div>
+
+    <div class="security-grid">
+        <div class="module-card">
+            <h2>Anti-Proxy Protocols</h2>
+            
+            <div class="setting-row">
+                <div>
+                    <b>Device ID Binding</b>
+                    <div class="desc">Locks attendance to a specific hardware ID.</div>
+                </div>
+                <button class="btn-toggle on" onclick="this.classList.toggle('on')">ACTIVE</button>
+            </div>
+
+            <div class="setting-row">
+                <div>
+                    <b>VPN Detection</b>
+                    <div class="desc">Blocks users using IP spoofing tools.</div>
+                </div>
+                <button class="btn-toggle on" onclick="this.classList.toggle('on')">ACTIVE</button>
+            </div>
+
+            <div class="setting-row">
+                <div>
+                    <b>Screenshot Protection</b>
+                    <div class="desc">Blurs QR if screen capture is detected.</div>
+                </div>
+                <button class="btn-toggle" onclick="this.classList.toggle('on')">DISABLED</button>
+            </div>
+        </div>
+
+        <div class="module-card">
+            <h2>Identity Verification</h2>
+            
+            <div class="setting-row">
+                <div>
+                    <b>Biometric Bypass</b>
+                    <div class="desc">Require Fingerprint/FaceID before scan.</div>
+                </div>
+                <button class="btn-toggle" onclick="this.classList.toggle('on')">OFF</button>
+            </div>
+
+            <div class="setting-row" style="border:none;">
+                <div>
+                    <b>Auto-Blacklist</b>
+                    <div class="desc">Flag IDs with 3+ failed GPS attempts.</div>
+                </div>
+                <button class="btn-toggle on" onclick="this.classList.toggle('on')">ON</button>
+            </div>
+
+            <div class="terminal-log" id="log">
+                [05:48:12] INITIALIZING SECURITY OVERWATCH...<br>
+                [05:48:15] NODE_NAGPUR: ALL SYSTEMS NOMINAL.<br>
+                [05:48:22] <span class="threat">ALERT:</span> PREVENTED MULTI-LOGIN ID: BT24092<br>
+                [05:49:01] VPN TUNNEL BLOCKED FROM IP: 102.45.XX.XX<br>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn-lockdown" onclick="confirmLockdown()">EMERGENCY_SYSTEM_LOCKDOWN</button>
+
+    <div class="back-nav">
+        <a href="QR attandance system/features1.html" class="btn-back">
+            [ &lt; ] BACK_TO_TERMINAL
+        </a>
+    </div>
+</div>
+
+<script>
+    const log = document.getElementById('log');
+    const logs = [
+        "ENCRYPTING SESSION_HASH_092...",
+        "GPS FENCE CHECK: SUCCESS",
+        "DEVICE_BINDING VERIFIED for ID: BT24081",
+        "BLOCKING PROXY ATTEMPT - NIT_LAB_B"
+    ];
+
+    setInterval(() => {
+        const entry = document.createElement('div');
+        entry.innerHTML = `[${new Date().toLocaleTimeString()}] ${logs[Math.floor(Math.random()*logs.length)]}`;
+        log.appendChild(entry);
+        log.scrollTop = log.scrollHeight;
+    }, 4000);
+
+    function confirmLockdown() {
+        if(confirm("CRITICAL: THIS WILL SUSPEND ALL ACTIVE SESSIONS. PROCEED?")) {
+            alert("SYSTEM LOCKDOWN INITIATED.");
+        }
+    }
+</script>
+
+</body>
+</html>

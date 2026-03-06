@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Attend | Satellite Verification</title>
+    <style>
+        :root {
+            --bg: #020617;
+            --glass: rgba(15, 23, 42, 0.7);
+            --accent: #38bdf8;
+            --danger: #ef4444;
+            --success: #4ade80;
+            --text: #f8fafc;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at center, #111827, #020617);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .gps-container {
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        .radar-box {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+        }
+
+        /* Radar Animation */
+        .radar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            margin: 0 auto 30px;
+            position: relative;
+            background: radial-gradient(circle, rgba(56,189,248,0.1) 0%, transparent 70%);
+        }
+        .radar::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 100%; height: 100%;
+            border-top: 2px solid var(--accent);
+            border-radius: 50%;
+            transform-origin: top left;
+            animation: rotate 2s linear infinite;
+        }
+
+        @keyframes rotate { 
+            from { transform: rotate(0deg); } 
+            to { transform: rotate(360deg); } 
+        }
+
+        .coord-box {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin-bottom: 20px;
+            border: 1px dashed rgba(56,189,248,0.3);
+        }
+
+        .status-pill {
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 12px;
+            display: inline-block;
+            letter-spacing: 1px;
+        }
+        .locked { background: rgba(74, 222, 128, 0.1); color: var(--success); border: 1px solid var(--success); }
+        .searching { background: rgba(56, 189, 248, 0.1); color: var(--accent); border: 1px solid var(--accent); }
+
+        .btn-proceed {
+            width: 100%;
+            background: var(--accent);
+            color: #020617;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 800;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: 0.3s;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .btn-ready { opacity: 1; pointer-events: auto; box-shadow: 0 0 20px rgba(56, 189, 248, 0.4); }
+
+        /* --- BACK BUTTON --- */
+        .btn-back {
+            display: inline-block;
+            margin-top: 20px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+        .btn-back:hover {
+            color: var(--danger);
+        }
+        .btn-back span { margin-right: 5px; }
+
+    </style>
+</head>
+<body>
+
+<div class="gps-container">
+    <div class="radar-box">
+        <div class="radar"></div>
+        
+        <h2 style="margin-top: 0;">Geofence Auth</h2>
+        <p style="color: #94a3b8; font-size: 14px;">Validating proximity to:<br>
+            <b style="color: white;">JD College of Engineering and Management</b>
+        </p>
+
+        <div class="coord-box">
+            LAT: <span id="lat">Acquiring...</span><br>
+            LON: <span id="lon">Acquiring...</span>
+        </div>
+
+        <div id="statusPill" class="status-pill searching">🛰️ Scanning Satellites...</div>
+
+        <button id="proceedBtn" class="btn-proceed" onclick="location.href='scanner.html'">Open Secure Scanner</button>
+        
+        <br>
+        <a href="QR attandance system/features1.html" class="btn-back"><span>&lt;</span> TERMINAL_ABORT</a>
+    </div>
+    
+    <p style="margin-top: 20px; font-size: 12px; color: #64748b;">This session is encrypted and GPS-bound to prevent remote check-ins.</p>
+</div>
+
+<script>
+    const targetLat = 21.1458; 
+    const targetLon = 79.0882;
+    const allowedRadius = 0.005; 
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            const options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            };
+            navigator.geolocation.getCurrentPosition(showPosition, showError, options);
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+
+    function showPosition(position) {
+        const userLat = position.coords.latitude;
+        const userLon = position.coords.longitude;
+
+        document.getElementById("lat").innerText = userLat.toFixed(4);
+        document.getElementById("lon").innerText = userLon.toFixed(4);
+
+        const latDiff = Math.abs(userLat - targetLat);
+        const lonDiff = Math.abs(userLon - targetLon);
+
+        if (latDiff <= allowedRadius && lonDiff <= allowedRadius) {
+            document.getElementById("statusPill").innerText = "✅ LOCATION VERIFIED";
+            document.getElementById("statusPill").className = "status-pill locked";
+            document.getElementById("proceedBtn").classList.add("btn-ready");
+        } else {
+            document.getElementById("statusPill").innerText = "❌ OUTSIDE CAMPUS ZONE";
+            document.getElementById("statusPill").style.color = "var(--danger)";
+            document.getElementById("statusPill").style.borderColor = "var(--danger)";
+            document.getElementById("statusPill").style.background = "rgba(239, 68, 68, 0.1)";
+        }
+    }
+
+    function showError(error) {
+        let msg = "⚠️ PERMISSION DENIED";
+        if(error.code === error.TIMEOUT) msg = "⚠️ SIGNAL TIMEOUT";
+        document.getElementById("statusPill").innerText = msg;
+    }
+
+    window.onload = getLocation;
+</script>
+
+</body>
+</html>

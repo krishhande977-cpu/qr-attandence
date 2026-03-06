@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Attend | Dynamic Security</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #020617;
+            --glass: rgba(15, 23, 42, 0.8);
+            --accent: #38bdf8;
+            --danger: #f87171;
+            --text: #f8fafc;
+            --subtext: #94a3b8;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at top right, #1e1b4b, #020617);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .back-container {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+        }
+
+        .back-nav {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--subtext);
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        .back-nav:hover {
+            color: var(--accent);
+            transform: translateX(-5px);
+        }
+
+        .back-nav svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .qr-card {
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            padding: 50px;
+            border-radius: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 0 80px rgba(0,0,0,0.6);
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .qr-wrapper {
+            background: white;
+            padding: 25px;
+            border-radius: 25px;
+            display: inline-block;
+            margin: 30px 0;
+            position: relative;
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.3);
+        }
+
+        .pulse-ring {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border: 4px solid var(--accent);
+            border-radius: 25px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.1); opacity: 0; }
+        }
+
+        .timer-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .timer-progress {
+            width: 100%;
+            height: 100%;
+            background: var(--accent);
+            transition: width 1s linear;
+        }
+
+        .token-info {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: var(--subtext);
+            margin-top: 15px;
+        }
+
+        .btn-stop {
+            margin-top: 40px;
+            background: rgba(248, 113, 113, 0.1);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-stop:hover {
+            background: var(--danger);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="back-container">
+    <a href="QR attandance system/features1.html" class="back-nav">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back
+    </a>
+</div>
+
+<div class="qr-card">
+    <h1 style="margin: 0; font-size: 24px; letter-spacing: -0.5px;">Dynamic Security Token</h1>
+    <p style="color: var(--subtext); font-size: 14px; margin-top: 8px;">Refreshing every 15 seconds to prevent proxy attendance.</p>
+
+    <div class="qr-wrapper">
+        <div class="pulse-ring"></div>
+        <div id="qrcode"></div>
+    </div>
+
+    <div style="font-size: 14px; font-weight: 600;">Code Refreshing In: <span id="seconds">15</span>s</div>
+    <div class="timer-bar">
+        <div class="timer-progress" id="progress"></div>
+    </div>
+
+    <div class="token-info">TOKEN ID: <span id="token">LOADING...</span></div>
+
+    <button class="btn-stop" onclick="alert('Session Terminated')">End Session</button>
+</div>
+
+<script>
+    let timeLeft = 15;
+    const qrContainer = document.getElementById("qrcode");
+    const tokenDisplay = document.getElementById("token");
+    const secondsDisplay = document.getElementById("seconds");
+    const progressDisplay = document.getElementById("progress");
+
+    function generateNewQR() {
+        const newToken = "NIT-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+        qrContainer.innerHTML = "";
+        
+        new QRCode(qrContainer, {
+            text: newToken,
+            width: 250,
+            height: 250,
+            colorDark: "#020617",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+        tokenDisplay.innerText = newToken;
+        timeLeft = 15;
+        updateUI();
+    }
+
+    function updateUI() {
+        secondsDisplay.innerText = timeLeft;
+        const widthPercent = (timeLeft / 15) * 100;
+        progressDisplay.style.width = widthPercent + "%";
+    }
+
+    setInterval(() => {
+        timeLeft--;
+        if (timeLeft <= 0) {
+            generateNewQR();
+        } else {
+            updateUI();
+        }
+    }, 1000);
+
+    window.onload = generateNewQR;
+</script>
+
+</body>
+</html>

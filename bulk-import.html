@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Attend | Data Migration</title>
+    <style>
+        :root {
+            --bg: #020617;
+            --glass: rgba(30, 41, 59, 0.7);
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.4);
+            --text: #f8fafc;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at center, #1e1b4b, #020617);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .import-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+        }
+        .upload-zone {
+            border: 2px dashed rgba(56, 189, 248, 0.3);
+            background: rgba(15, 23, 42, 0.5);
+            padding: 50px 20px;
+            border-radius: 20px;
+            margin: 30px 0 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .upload-zone:hover {
+            border-color: var(--accent);
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        .upload-icon { font-size: 48px; margin-bottom: 15px; display: block; }
+
+        .file-info {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 13px;
+            color: #94a3b8;
+            text-align: left;
+            margin-bottom: 20px;
+            display: none; 
+            border: 1px solid rgba(74, 222, 128, 0.2);
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--accent);
+            color: #020617;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-primary:hover { box-shadow: 0 0 20px var(--accent-glow); transform: translateY(-2px); }
+
+        .template-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            opacity: 0.8;
+            transition: 0.3s;
+        }
+        .template-link:hover { opacity: 1; text-decoration: underline; }
+
+        .btn-back {
+            display: block;
+            margin-top: 30px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+        .btn-back:hover { color: var(--accent); }
+        .btn-back span { margin-right: 5px; }
+
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 20px;
+            font-size: 11px;
+            color: #64748b;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .step { flex: 1; position: relative; }
+        .step.active { color: var(--accent); font-weight: 700; }
+    </style>
+</head>
+<body>
+
+<div class="import-card">
+    <h1 style="margin:0; font-size: 26px;">Bulk Student Import</h1>
+    <p style="color: #94a3b8; font-size: 14px; margin-top: 10px;">Upload your CSV roster to populate the 2026 database.</p>
+
+    <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+        <span class="upload-icon">📊</span>
+        <b style="font-size: 18px;">Drop CSV file here</b>
+        <p style="font-size: 13px; color: #64748b;">or click to browse your computer</p>
+        <input type="file" id="fileInput" hidden accept=".csv" onchange="handleFile(this)">
+    </div>
+
+    <div id="fileInfo" class="file-info">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span id="fileName" style="color:white; font-weight:600;">students_list.csv</span>
+            <span id="fileSize">24 KB</span>
+        </div>
+        <div style="margin-top:10px; color:#4ade80;">✔ Format Validated: 102 Students Detected</div>
+    </div>
+
+    <button class="btn-primary" onclick="startImport()">Initialize Migration</button>
+
+    <a href="#" class="template-link">📥 Download Sample CSV Template</a>
+
+    <a href="QR attandance system/features1.html" class="btn-back">
+        <span>&larr;</span> RETURN TO SYSTEM CONSOLE
+    </a>
+
+    <div class="steps">
+        <div class="step active">1. UPLOAD</div>
+        <div class="step">2. VALIDATE</div>
+        <div class="step">3. SYNC TO CLOUD</div>
+    </div>
+</div>
+
+<script>
+    function handleFile(input) {
+        const file = input.files[0];
+        if (file) {
+            document.getElementById('fileInfo').style.display = 'block';
+            document.getElementById('fileName').innerText = file.name;
+            document.getElementById('fileSize').innerText = (file.size / 1024).toFixed(1) + " KB";
+            
+            const steps = document.querySelectorAll('.step');
+            steps[0].style.color = "#4ade80"; 
+            steps[1].classList.add('active');
+        }
+    }
+
+    function startImport() {
+        const fileInput = document.getElementById('fileInput');
+        if(!fileInput.files[0]) return alert("Please select a file first.");
+
+        const btn = document.querySelector('.btn-primary');
+        btn.innerText = "Syncing to Cloud...";
+        btn.style.background = "#1e293b";
+        btn.style.color = "#94a3b8";
+        btn.disabled = true;
+        
+        setTimeout(() => {
+            alert("Success! 102 student records have been migrated to the Cloud Database.");
+            window.location.href = 'reports.html';
+        }, 2000);
+    }
+</script>
+
+</body>
+</html>

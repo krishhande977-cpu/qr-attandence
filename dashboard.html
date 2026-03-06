@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Attend Pro | Smart Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+/* --- THEME & ANIMATED BACKGROUND --- */
+:root {
+  --primary-glow: #00d2ff;
+  --secondary-glow: #3a7bd5;
+  --bg-dark: #0f172a;
+  --glass: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  color: white;
+  background: linear-gradient(-45deg, #0b1120, #12192f, #182341, #0b1120);
+  background-size: 400% 400%;
+  animation: gradientAnimation 15s ease infinite;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* --- MAIN NAVBAR --- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 2000;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-badge {
+    background: var(--primary-glow);
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    color: #0f172a;
+}
+
+.navLinks a {
+    color: white;
+    text-decoration: none;
+    margin-left: 25px;
+    font-weight: 500;
+    transition: 0.3s;
+    opacity: 0.8;
+}
+
+.navLinks a:hover { color: var(--primary-glow); opacity: 1; }
+
+/* --- DASHBOARD SUB-NAV (TABS) --- */
+.tab-bar {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.tab-bar button {
+  padding: 8px 16px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 0.9rem;
+}
+
+.tab-bar button:hover, .tab-bar button.active-tab {
+  background: var(--primary-glow);
+  color: #0f172a;
+  box-shadow: 0 0 15px var(--primary-glow);
+}
+
+/* --- PAGES & CARDS --- */
+.page {
+  display: none;
+  padding: 40px 20px;
+  max-width: 1000px;
+  margin: auto;
+  text-align: center;
+}
+
+.active { display: block; animation: fadeIn 0.5s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card, .chart-box, .table-container {
+  background: var(--glass);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  margin-bottom: 25px;
+  padding: 25px;
+}
+
+h2 { color: var(--primary-glow); margin-bottom: 20px; }
+
+/* --- INPUTS & BUTTONS --- */
+input, select {
+  padding: 12px;
+  margin: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  background: rgb(248, 245, 245);
+  color: rgb(1, 1, 1);
+}
+
+button.action {
+  background: var(--primary-glow);
+  padding: 12px 25px;
+  border: none;
+  border-radius: 10px;
+  color: #0f172a;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.chart-box { width: 100%; max-width: 500px; height: 350px; margin: auto; }
+
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 15px; text-align: left; border-bottom: 1px solid var(--glass-border); }
+th { color: var(--primary-glow); font-size: 0.8rem; letter-spacing: 1px; }
+
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="logo">
+        <span class="logo-badge">QR</span>
+        <h2>QR Attend</h2>
+    </div>
+    <nav class="navLinks">
+        <a href="QR.html">Home</a>
+        <a href="features1.html">Features</a>
+        <a href="how-it-work.html">How it Works</a>
+        <a href="dashboard.html" style="color:var(--primary-glow); opacity:1;">Dashboard</a>
+    </nav>
+</header>
+
+<div class="tab-bar">
+  <button id="btn-dashboard" onclick="showPage('dashboard')">📊 Summary</button>
+  <button id="btn-scanner" onclick="showPage('scanner')">📷 Scanner</button>
+  <button id="btn-report" onclick="showPage('report')">📋 Report</button>
+  <button id="btn-cloud" onclick="showPage('cloud')">☁️ Cloud</button>
+  <button id="btn-security" onclick="showPage('security')">🔐 Login</button>
+</div>
+
+<div id="dashboard" class="page active">
+  <h2>📊 Real-Time Analytics</h2>
+  <select id="subject" onchange="updateUI()">
+      <option>Formal Languages & Automata Theory(CS4T001)</option>
+    <option>Design & Analysis of Algorithms(CS4T002)</option>
+    <option>Foundation of Large Language Model(CS4M002)</option>
+    <option>Open Elective-2 Business Data Processing(AI4O018)</option>
+    <option>Graph Theory(BS4O010)</option>
+    <option>Open Elective-2 Disaster Management(CE4O011)</option>
+    <option>Open Elective-2 Ethical Hacking(CS4O015)</option>
+    <option>Open Elective-2 German Language(DS4O017)</option>
+    <option>Open Elective-2 Japanese Language(IT4O016)</option>
+    <option>Open Elective-2 Green Energy(EE4O012)</option>
+    <option>Open Elective-2 Indestry 4.0(ME4O013)</option>  
+    <option>Digital Marketing(ET4O014)</option>
+    <option>Management Application Software(CS4H002)</option>
+    <option>JDCAP-2(CSV002)</option>
+    <option>UI/UX Lab(CS4L001)</option>
+    <option>Design & Analysis of Algorithms Lab(CS4T002)</option>
+    <option>Data Analytics(CS4L003)</option>
+    <option>Mini Project(CS4P002)</option>
+  </select>
+  <div class="card">
+    Present: <span id="present">0</span> | Absent: <span id="absent">0</span> | Ratio: <span id="percent">0%</span>
+  </div>
+  <div class="chart-box"><canvas id="chart"></canvas></div>
+</div>
+
+<div id="scanner" class="page">
+  <h2>📷 Attendance Terminal</h2>
+  <div class="card">
+      <input id="studentId" placeholder="Enter Student ID">
+      <select id="scanSubject"></select><br><br>
+      <button class="action" onclick="scan()">Mark Attendance</button>
+  </div>
+</div>
+
+<div id="report" class="page">
+  <h2>📋 Attendance Records</h2>
+  <select id="reportSubject" onchange="loadReport()"></select>
+  <div class="table-container">
+    <table>
+      <thead><tr><th>ID</th><th>Status</th><th>Timestamp</th></tr></thead>
+      <tbody id="table"></tbody>
+    </table>
+  </div>
+</div>
+
+<div id="cloud" class="page">
+  <h2>☁️ Cloud Sync</h2>
+  <div class="card">
+    <button class="action" onclick="alert('Synced!')">Backup to Cloud</button>
+    <button class="action" onclick="clearData()" style="background:#ff5252; color:white; margin-left:10px;">Clear Data</button>
+  </div>
+</div>
+
+<div id="security" class="page">
+  <h2>🔐 Admin Login</h2>
+  <div class="card" style="max-width: 400px; margin: auto;">
+    <input id="user" placeholder="Username" style="width: 80%;">
+    <input id="pass" type="password" placeholder="Password" style="width: 80%;"><br><br>
+    <button class="action" onclick="login()">Authenticate</button>
+  </div>
+</div>
+
+<script>
+const subjectNames = Array.from(document.getElementById('subject').options).map(opt => opt.value);
+let subjects = {};
+subjectNames.forEach(name => { subjects[name] = []; });
+
+const scannerSelect = document.getElementById('scanSubject');
+const reportSelect = document.getElementById('reportSubject');
+document.getElementById('subject').querySelectorAll('option').forEach(opt => {
+    scannerSelect.appendChild(opt.cloneNode(true));
+    reportSelect.appendChild(opt.cloneNode(true));
+});
+
+let chart;
+
+function showPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-bar button').forEach(b=>b.classList.remove('active-tab'));
+  
+  document.getElementById(page).classList.add('active');
+  document.getElementById('btn-' + page).classList.add('active-tab');
+
+  if(page === "dashboard") updateUI();
+  if(page === "report") loadReport();
+}
+
+function updateUI(){
+  let subject = document.getElementById("subject").value;
+  let data = subjects[subject];
+  let present = data.length;
+  let total = 101;
+  let absent = total - present;
+  let percent = ((present/total)*100).toFixed(1);
+
+  document.getElementById('present').innerText = present;
+  document.getElementById('absent').innerText = absent;
+  document.getElementById('percent').innerText = percent + '%';
+  updateChart(present, absent);
+}
+
+function updateChart(present, absent){
+  const ctx = document.getElementById('chart').getContext('2d');
+  if(chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Present','Absent'],
+      datasets: [{
+        data: [present, absent],
+        backgroundColor: ['#00d2ff','#ff5252'],
+        borderColor: 'rgba(255,255,255,0.1)',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: 'white' } } }
+    }
+  });
+}
+
+function scan(){
+  let id = document.getElementById("studentId").value;
+  let subject = document.getElementById("scanSubject").value;
+  if(!id) return alert("Enter ID");
+  if(subjects[subject].find(s => s.id === id)) return alert("Already marked.");
+
+  subjects[subject].push({ id: id, status: "Present", time: new Date().toLocaleTimeString() });
+  alert("✅ Marked!");
+  document.getElementById("studentId").value = "";
+}
+
+function loadReport(){
+  let subject = document.getElementById("reportSubject").value;
+  let table = document.getElementById("table");
+  table.innerHTML = subjects[subject].map(d => `
+    <tr><td>${d.id}</td><td style="color:#00e676">${d.status}</td><td>${d.time}</td></tr>
+  `).join('');
+}
+
+function clearData(){ 
+  if(confirm("Erase all data?")) {
+      subjectNames.forEach(name => { subjects[name] = []; });
+      updateUI();
+  }
+}
+
+function login(){
+  if(document.getElementById("user").value==="admin" && document.getElementById("pass").value==="1234"){
+    alert("Success");
+    showPage('dashboard');
+  } else {
+    alert("Fail");
+  }
+}
+
+showPage('dashboard');
+</script>
+
+</body>
+</html>

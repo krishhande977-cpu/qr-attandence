@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Attend 2026 | Teacher Panel</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root { --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --text: #f8fafc; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        
+        nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .back-link { color: var(--accent); text-decoration: none; font-weight: bold; }
+
+        .panel-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #334155;
+            text-align: center;
+        }
+
+        #qrcode {
+            background: white;
+            padding: 15px;
+            display: inline-block;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .input-group { text-align: left; margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; color: #94a3b8; font-size: 14px; }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            width: 100%;
+            background: var(--accent);
+            color: #0f172a;
+            font-weight: bold;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .timer { font-size: 2rem; font-weight: bold; color: #f87171; margin: 10px 0; }
+        .live-count { font-size: 3rem; color: var(--accent); margin: 10px 0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <nav>
+        <span style="font-size: 24px; font-weight: bold;">Teacher Control Panel</span>
+        <a href="QR attandance system/features1.html" class="back-link">← Back to Dashboard</a>
+    </nav>
+
+    <div class="panel-grid">
+        <div class="card">
+            <h3>Generate Session QR</h3>
+            <div class="input-group">
+                <label>Select Subject</label>
+                <select id="subSelect">
+                    <option>Formal Languages & Automata Theory(CS4T001)</option>
+                <option>Design & Analysis of Algorithms(CS4T002)</option>
+                <option>Foundation of Large Language Model(CS4M002)</option>
+                <option>Business Data Processing(AI4O018)</option>
+                <option>Graph Theory(BS4O010)</option>
+                <option>Disaster Management(CE4O011)</option>
+                <option>Ethical Hacking(CS4O015)</option>
+                <option>German Language(DS4O017)</option>
+                <option>Japanese Language(IT4O016)</option>
+                <option>Green Energy(EE4O012)</option>
+                <option>Industry 4.0(ME4O013)</option>  
+                <option>Digital Marketing(ET4O014)</option>
+                <option>Management Application Software(CS4H002)</option>
+                <option>JDCAP-2(CSV002)</option>
+                <option>UI/UX Lab(CS4L001)</option>
+                <option>DAA Lab(CS4T002)</option>
+                <option>Data Analytics(CS4L003)</option>
+                <option>Mini Project(CS4P002)</option>  
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Time Limit (Minutes)</label>
+                <input type="number" id="timeLimit" value="5">
+            </div>
+            <button class="btn" onclick="generateSession()">Start Attendance</button>
+            
+            <div id="qrcode"></div>
+            <p id="qrStatus" style="color: #94a3b8;">Enter details to create QR</p>
+        </div>
+
+        <div class="card">
+            <h3>Live Session Status</h3>
+            <div class="timer" id="displayTimer">00:00</div>
+            <p>Time Remaining</p>
+            <hr style="border: 0; border-top: 1px solid #334155; margin: 20px 0;">
+
+            <p>Students Scanned</p>
+            <button class="btn" style="background: #334155; color: white;" onclick="location.href='reports.html'">View Full Roster</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let timerInterval;
+
+    function generateSession() {
+        const subject = document.getElementById('subSelect').value;
+        const minutes = document.getElementById('timeLimit').value;
+        const qrContainer = document.getElementById('qrcode');
+        
+        qrContainer.innerHTML = "";
+        
+        const sessionId = "SESS-" + Math.floor(Math.random() * 10000);
+        new QRCode(qrContainer, {
+            text: `Subject: ${subject} | ID: ${sessionId}`,
+            width: 180,
+            height: 180
+        });
+
+        document.getElementById('qrStatus').innerText = "QR Active for " + subject;
+
+        startTimer(minutes * 60);
+        
+        simulateAttendance();
+    }
+
+    function startTimer(duration) {
+        clearInterval(timerInterval);
+        let timer = duration, minutes, seconds;
+        const display = document.getElementById('displayTimer');
+
+        timerInterval = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(timerInterval);
+                display.textContent = "EXPIRED";
+                document.getElementById('qrcode').style.opacity = "0.2";
+                document.getElementById('qrStatus').innerText = "Session Closed";
+            }
+        }, 1000);
+    }
+
+    function simulateAttendance() {
+        let count = 0;
+        const countDisplay = document.getElementById('count');
+        const interval = setInterval(() => {
+            if(count < 48) { 
+                count++;
+                countDisplay.innerText = count;
+            } else {
+                clearInterval(interval);
+            }
+        }, 3000); 
+    }
+</script>
+
+</body>
+</html>

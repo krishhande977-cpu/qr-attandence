@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance - Features</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-glow: #00d2ff;
+            --secondary-glow: #3a7bd5;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* --- Navbar Styles --- */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-badge {
+            background: var(--primary-glow);
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #0f172a;
+            font-size: 0.9rem;
+        }
+
+        .logo h2 {
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+
+        .navLinks a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: 0.3s;
+            opacity: 0.8;
+        }
+
+        .navLinks a:hover {
+            color: var(--primary-glow);
+            opacity: 1;
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 50px 40px;
+            width: 100%;
+            max-width: 1200px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .header-glow {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 50px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #fff;
+            text-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--secondary-glow);
+        }
+
+        /* --- Grid & Cards --- */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--primary-glow);
+            box-shadow: 0 10px 30px rgba(0, 210, 255, 0.15);
+        }
+
+        .icon {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .feature-card h3 {
+            margin: 10px 0;
+            font-size: 1.3rem;
+            color: var(--primary-glow);
+        }
+
+        .feature-card p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        .explore-btn {
+            display: inline-block;
+            margin-top: 15px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .explore-btn:hover {
+            color: var(--primary-glow);
+            border-bottom-color: var(--primary-glow);
+            padding-left: 5px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 15px; text-align: center; }
+            .navLinks a { margin: 0 10px; font-size: 0.85rem; }
+            .header-glow { font-size: 1.8rem; }
+            .container { padding: 30px 20px; }
+        }
+        @media (max-width: 480px) {
+            .feature-card { padding: 20px; }
+            .icon { font-size: 1.8rem; }
+            .feature-card h3 { font-size: 1.1rem; }
+            .feature-card p { font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo">
+            <span class="logo-badge">QR</span>
+            <h2>QR Attend</h2>
+        </div>
+        <nav class="navLinks">
+            <a href="QR.html">Home</a>
+            <a href="features1.html">Features</a>
+            <a href="how-it-work.html">How it Works</a>
+            <a href="dashboard.html">Dashboard</a>
+        </nav>
+    </header>
+
+    <div class="main-content">
+        <div class="container">
+            <h1 class="header-glow">✨ System Features</h1>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="icon">📄</span>
+                    <h3>Reports</h3>
+                    <p>Generate detailed attendance analytics. Export data instantly to Excel or PDF for administrative use.</p>
+                    <a href="../reports.html" class="explore-btn">Explore →</a>
+                </div>
+
+                <div class="feature-card">
+                    <span class="icon">🏫</span>
+                    <h3>Teacher Panel</h3>
+                    <p>Generate dynamic, time-sensitive QR codes. Manage classes, view live rosters, and track student trends.</p>
+                    <a href="../teacher-panel.html" class="explore-btn">Explore →</a>
+                </div>
+
+                <div class="feature-card">
+                    <span class="icon">🎓</span>
+                    <h3>Student Panel</h3>
+                    <p>View your personal attendance history, check class schedules, and receive notifications for low attendance.</p>
+                    <a href="../student-panels.html" class="explore-btn">Explore →</a>
+                </div>
+
+                <div class="feature-card">
+                    <span class="icon">⏰</span>
+                    <h3>Time Lock</h3>
+                    <p>QR codes automatically expire after a set time. Prevents misuse and ensures accurate attendance tracking.</p>
+                    <a href="../time-lock.html" class="explore-btn">Explore →</a>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="icon">☁️</span>
+                    <h3>Cloud Ready</h3>
+                    <p>Seamlessly integrates with Firebase or MySQL. Scalable architecture for schools of all sizes.</p>
+                    <a href="../cloud-backup.html" class="explore-btn">Explore →</a>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="icon">🔒</span>
+                    <h3>GPS Verification</h3>
+                    <p>Attendance is only allowed within the campus location. Real-time geo-fencing for verified security.</p>
+                    <a href="../gps-verification.html" class="explore-btn">Explore →</a>
+                </div>    
+
+                <div class="feature-card">
+                    <span class="icon">⏳</span>
+                    <h3>Time-Limited QR</h3>
+                    <p>Auto-expiring QR code to prevent misuse. Ensures attendance is marked within the designated window.</p>
+                    <a href="../time-limited-qr.html" class="explore-btn">Explore →</a>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="icon">📊</span>
+                    <h3>Live Dashboard</h3>
+                    <p>Real-time attendance statistics with smart graphs. Monitor trends and make data-driven decisions.</p>
+                    <a href="../live-dashboard.html" class="explore-btn">Explore →</a>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="icon">📥</span>
+                    <h3>Bulk Import</h3>
+                    <p>Upload Excel files to add students instantly. Simplifies onboarding and keeps your database clean.</p>
+                    <a href="../bulk-import.html" class="explore-btn">Explore →</a>
+                </div>
+
+                <div class="feature-card">
+                    <span class="icon">🔔</span>
+                    <h3>Smart Alerts</h3>
+                    <p>SMS and Email notifications for attendance updates. Stay informed about your status automatically.</p>
+                    <a href="../smart-alerts.html" class="explore-btn">Explore →</a>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="icon">🔐</span>
+                    <h3>Role-Based Login</h3>
+                    <p>Secure Admin, Teacher, and Student login with encrypted authentication. Protect your data.</p>
+                    <a href="../role-based-login.html" class="explore-btn">Explore →</a>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="icon">📍</span>
+                    <h3>Advance Security</h3>
+                    <p>Encrypted QR codes, anti-proxy detection algorithms, and detailed activity logs for every scan.</p>
+                    <a href="../advance-security.html" class="explore-btn">Explore →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+</body>
+</html>

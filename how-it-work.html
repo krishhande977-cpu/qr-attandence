@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Attend | How It Works</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-glow: #00d2ff;
+            --secondary-glow: #3a7bd5;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(-45deg, #0b1120, #12192f, #182341, #0b1120);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            color: white;
+            min-height: 100vh;
+        }
+
+       
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo { display: flex; align-items: center; gap: 10px; }
+        .logo-badge {
+            background: var(--primary-glow);
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #0f172a;
+        }
+
+        .navLinks a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-weight: 500;
+            transition: 0.3s;
+            opacity: 0.8;
+        }
+
+        .navLinks a:hover { color: var(--primary-glow); opacity: 1; }
+
+        
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #fff;
+            text-shadow: 0 0 15px var(--primary-glow);
+        }
+
+       
+        .step {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            margin: 25px 0;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: left;
+            border: 1px solid var(--glass-border);
+            transition: all 0.4s ease;
+            animation: float 6s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .step:nth-child(even) { animation-delay: 2s; }
+
+        .step:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.2);
+            background: rgba(30, 41, 59, 0.9);
+        }
+
+        .step-number {
+            font-size: 2rem;
+            min-width: 60px;
+            height: 60px;
+            background: rgba(0, 210, 255, 0.1);
+            border: 1px solid var(--primary-glow);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary-glow);
+            font-weight: bold;
+        }
+
+        .step-text h3 {
+            color: var(--primary-glow);
+            margin-bottom: 8px;
+            font-size: 1.4rem;
+        }
+
+        .step-text p {
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 15px 35px;
+            background: var(--primary-glow);
+            border-radius: 12px;
+            color: #0f172a;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .back-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px var(--primary-glow);
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .step { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="logo">
+      <span class="logo-badge">QR</span>
+      <h2>QR Attend</h2>
+    </div>
+    <nav class="navLinks">
+      <a href="QR.html">Home</a>
+      <a href="features1.html">Features</a>
+      <a href="how-it-work.html">How-it-Work</a>
+      <a href="dashboard.html">Dashboard</a>
+    </nav>
+</header>
+
+<div class="container">
+
+<h1>⚙️ How It Works</h1>
+
+
+
+<div class="step">
+  <div class="step-number">01</div>
+  <div class="step-text">
+    <h3>Teacher Generates QR</h3>
+    <p>Teacher logs in and generates a unique, dynamic QR code for the specific class session.</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-number">02</div>
+  <div class="step-text">
+    <h3>QR is Time-Limited</h3>
+    <p>The system applies a time-lock; the code expires automatically to prevent late scans or sharing.</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-number">03</div>
+  <div class="step-text">
+    <h3>Students Scan QR</h3>
+    <p>Students use the built-in scanner to capture the code. Geolocation is verified at this stage.</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-number">04</div>
+  <div class="step-text">
+    <h3>Attendance Stored</h3>
+    <p>Data is instantly transmitted and stored securely in the encrypted cloud database.</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-number">05</div>
+  <div class="step-text">
+    <h3>Reports & Analytics</h3>
+    <p>Admin panels generate real-time visual charts and downloadable CSV/PDF reports.</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-number">06</div>
+  <div class="step-text">
+    <h3>Smart Alerts</h3>
+    <p>Automatic SMS and Email notifications are sent for low attendance or successful check-ins.</p>
+  </div>
+</div>
+
+    <div class="step">
+      <div class="step-number">07</div>
+      <div class="step-text">
+        <h3>Role-Based Secure Login</h3>
+        <p>Customized portals for Admin, Faculty, and Students. Permissions are strictly enforced via JWT authentication to ensure data privacy.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">08</div>
+      <div class="step-text">
+        <h3>Smart Bulk Import</h3>
+        <p>Admins can upload entire student directories via CSV or Excel. The system automatically maps fields and generates unique IDs instantly.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">09</div>
+      <div class="step-text">
+        <h3>Dynamic QR Generation</h3>
+        <p>Teacher generates a unique, time-sensitive QR code. Every session refresh creates a new signature to prevent unauthorized reuse.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">10</div>
+      <div class="step-text">
+        <h3>Advanced Security Layer</h3>
+        <p>Beyond time-locks, we use <strong>Anti-Proxy Protection</strong> (Geofencing + Device Fingerprinting) to ensure students are physically in class.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">11</div>
+      <div class="step-text">
+        <h3>Student Scan & Verify</h3>
+        <p>Students scan through the encrypted app interface. The system cross-references GPS coordinates with the classroom's registered location.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">12</div>
+      <div class="step-text">
+        <h3>Live Attendance Dashboard</h3>
+        <p>Watch attendance tick up in real-time. Teachers see a live heat-map and "who's here" list as scans happen, with instant cloud syncing.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">13</div>
+      <div class="step-text">
+        <h3>Reports & Smart Alerts</h3>
+        <p>Automated PDF/CSV exports for Admins and instant SMS/Email triggers for students falling below the required attendance threshold.</p>
+      </div>
+    </div>
+
+</div>
+</div>
+
+</body>
+</html>

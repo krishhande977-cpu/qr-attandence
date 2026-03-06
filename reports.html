@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Attend 2026 | Attendance Report</title>
+    <style>
+        :root { --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --text: #f8fafc; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        
+        nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .back-link { color: var(--accent); text-decoration: none; font-weight: bold; }
+
+        .input-section {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid #334155;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            align-items: end;
+        }
+        .input-group { display: flex; flex-direction: column; gap: 5px; }
+        input, select {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+            font-size: 13px;
+        }
+        .btn {
+            background: var(--accent);
+            color: #0f172a;
+            font-weight: bold;
+            border: none;
+            padding: 11px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .table-container { background: var(--card); padding: 20px; border-radius: 12px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        th { text-align: left; padding: 12px; color: #94a3b8; border-bottom: 2px solid #334155; }
+        td { padding: 12px; border-bottom: 1px solid #334155; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .verified { color: var(--accent); border: 1px solid var(--accent); }
+        .present { color: #4ade80; border: 1px solid #4ade80; }
+
+        @media print {
+            body { background: white !important; color: black !important; }
+            .input-section, .btn, nav { display: none !important; }
+            .table-container { background: white !important; padding: 0; border: none; }
+            table { width: 100%; border: 1px solid #ddd; }
+            th, td { border: 1px solid #ddd; color: black !important; }
+            .badge { border: none !important; padding: 0; color: black !important; }
+            h1 { color: black !important; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <nav>
+        <a href="QR attandance system/features1.html" class="back-link">← Return to Dashboard</a>
+        <button class="btn" onclick="window.print()" style="background: #f8fafc;">🖨️ Print to PDF</button>
+    </nav>
+
+    <h1>Attendance Report</h1>
+
+    <div class="input-section">
+        <div class="input-group">
+            <label>Student Name</label>
+            <input type="text" id="stuName" placeholder="Enter Name">
+        </div>
+        <div class="input-group">
+            <label>Roll No</label>
+            <input type="text" id="stuRoll" placeholder="Roll Number">
+        </div>
+        <div class="input-group">
+            <label>GPS Status</label>
+            <select id="gpsStatus">
+                <option value="Verified">Verified</option>
+                <option value="Failed">Failed</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>Subject</label>
+            <select id="subject">
+                <option>Formal Languages & Automata Theory(CS4T001)</option>
+                <option>Design & Analysis of Algorithms(CS4T002)</option>
+                <option>Foundation of Large Language Model(CS4M002)</option>
+                <option>Business Data Processing(AI4O018)</option>
+                <option>Graph Theory(BS4O010)</option>
+                <option>Disaster Management(CE4O011)</option>
+                <option>Ethical Hacking(CS4O015)</option>
+                <option>German Language(DS4O017)</option>
+                <option>Japanese Language(IT4O016)</option>
+                <option>Green Energy(EE4O012)</option>
+                <option>Industry 4.0(ME4O013)</option>  
+                <option>Digital Marketing(ET4O014)</option>
+                <option>Management Application Software(CS4H002)</option>
+                <option>JDCAP-2(CSV002)</option>
+                <option>UI/UX Lab(CS4L001)</option>
+                <option>DAA Lab(CS4T002)</option>
+                <option>Data Analytics(CS4L003)</option>
+                <option>Mini Project(CS4P002)</option>  
+            </select>
+        </div>
+        <button class="btn" onclick="addAttendance()">Add Student</button>
+    </div>
+
+    <div class="table-container">
+        <table id="attendanceTable">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Roll No</th>
+                    <th>Scan Time</th>
+                    <th>GPS Status</th>
+                    <th>Subject</th>
+                    <th>Attendance</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function addAttendance() {
+        const name = document.getElementById('stuName').value;
+        const roll = document.getElementById('stuRoll').value;
+        const gps = document.getElementById('gpsStatus').value;
+        const subject = document.getElementById('subject').value; 
+        const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        if(name === "" || roll === "") {
+            alert("Please fill in Student Name and Roll No!");
+            return;
+        }
+
+        const table = document.getElementById('attendanceTable').getElementsByTagName('tbody')[0];
+        const newRow = table.insertRow();
+        newRow.innerHTML = `
+            <td>${name}</td>
+            <td>${roll}</td>
+            <td>${timeStr}</td>
+            <td><span class="badge verified">${gps}</span></td>
+            <td>${subject}</td>
+            <td><span class="badge present">Present</span></td>
+        `;
+
+        document.getElementById('stuName').value = "";
+        document.getElementById('stuRoll').value = "";
+    }
+</script>
+
+</body>
+</html>
