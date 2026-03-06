@@ -128,7 +128,36 @@ async function submitAttendance(){
   } catch (err) {
     console.error(err);
     alert("Failed to save attendance");
+
   }
+  
+<div id="dashboard" class="page active">
+  <h2>📊 Real-Time Analytics</h2>
+  <select id="subject" onchange="updateUI()">
+      <option>Formal Languages & Automata Theory(CS4T001)</option>
+    <option>Design & Analysis of Algorithms(CS4T002)</option>
+    <option>Foundation of Large Language Model(CS4M002)</option>
+    <option>Open Elective-2 Business Data Processing(AI4O018)</option>
+    <option>Graph Theory(BS4O010)</option>
+    <option>Open Elective-2 Disaster Management(CE4O011)</option>
+    <option>Open Elective-2 Ethical Hacking(CS4O015)</option>
+    <option>Open Elective-2 German Language(DS4O017)</option>
+    <option>Open Elective-2 Japanese Language(IT4O016)</option>
+    <option>Open Elective-2 Green Energy(EE4O012)</option>
+    <option>Open Elective-2 Indestry 4.0(ME4O013)</option>  
+    <option>Digital Marketing(ET4O014)</option>
+    <option>Management Application Software(CS4H002)</option>
+    <option>JDCAP-2(CSV002)</option>
+    <option>UI/UX Lab(CS4L001)</option>
+    <option>Design & Analysis of Algorithms Lab(CS4T002)</option>
+    <option>Data Analytics(CS4L003)</option>
+    <option>Mini Project(CS4P002)</option>
+  </select>
+  <div class="card">
+    Present: <span id="present">0</span> | Absent: <span id="absent">0</span> | Ratio: <span id="percent">0%</span>
+  </div>
+  <div class="chart-box"><canvas id="chart"></canvas></div>
+</div>
 }
 
 </script>
