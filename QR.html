@@ -291,8 +291,9 @@
       const input = document.getElementById('sessionInput').value;
       const qrDiv = document.getElementById('qrcode');
       qrDiv.innerHTML = "";
+       const attendanceLink = "https://krishhande977-cpu.github.io/qr-attandence/abc.html?session=" + input;
       if (input) {
-        new QRCode(qrDiv, { text: input, width: 200, height: 200 });
+        new QRCode(qrDiv, { text: attendanceLink, width: 200, height: 200 });
       } else {
         alert("Please enter a Student ID");
       }
