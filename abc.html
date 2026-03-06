@@ -98,7 +98,7 @@ function setStatus(s){
  const SUPABASE_URL = 'https://larwsqghepyjtxbhgdfr.supabase.co'; // e.g. https://xyz.supabase.co
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxhcndzcWdoZXB5anR4YmhnZGZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MDE0MzksImV4cCI6MjA4ODM3NzQzOX0.bZucFYWv1nzaNernoNqhtsq0U7o2bXGX9bD9clv8jmU';
    
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // URL se session read karega (optional, not stored to DB)
 const params = new URLSearchParams(window.location.search);
@@ -120,9 +120,9 @@ async function submitAttendance(){
   const time = new Date().toISOString();
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await   supabaseClient
       .from('attendance')
-      .insert([{ student_id: studentId, name, status, timestamp: time }]);
+      .insert([{ student_id: studentId, name, status, created_at: time }]);
     if (error) throw error;
     alert("Attendance Saved");
   } catch (err) {
