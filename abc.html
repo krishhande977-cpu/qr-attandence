@@ -3,6 +3,8 @@
 <head>
 <title>Smart Attendance</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- supabase client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <style>
 
@@ -89,44 +91,44 @@ cursor:pointer;
 let status="Present";
 
 function setStatus(s){
-status=s;
+  status=s;
 }
 
-// URL se session read karega
+// supabase init
+ const SUPABASE_URL = 'https://larwsqghepyjtxbhgdfr.supabase.co'; // e.g. https://xyz.supabase.co
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxhcndzcWdoZXB5anR4YmhnZGZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MDE0MzksImV4cCI6MjA4ODM3NzQzOX0.bZucFYWv1nzaNernoNqhtsq0U7o2bXGX9bD9clv8jmU';
+   
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// URL se session read karega (optional, not stored to DB)
 const params = new URLSearchParams(window.location.search);
 const session = params.get("session");
 
 if(session){
-document.getElementById("subject").value=session;
+  document.getElementById("subject").value=session;
 }
 
-function submitAttendance(){
+async function submitAttendance(){
+  const studentId=document.getElementById("studentId").value.trim();
+  const name=document.getElementById("name").value.trim();
 
-const subject=document.getElementById("subject").value;
-const studentId=document.getElementById("studentId").value;
-const name=document.getElementById("name").value;
+  if(studentId=="" || name==""){
+    alert("Fill all fields");
+    return;
+  }
 
-if(subject=="" || studentId=="" || name==""){
-alert("Fill all fields");
-return;
-}
+  const time = new Date().toISOString();
 
-const time = new Date().toISOString();
-
-fetch('/attendance', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ studentId, name, status, time })
-}).then(resp => {
-  if (!resp.ok) throw new Error('Network response not ok');
-  return resp.json();
-}).then(saved => {
-  alert("Attendance Saved");
-}).catch(err => {
-  console.error(err);
-  alert("Failed to save attendance");
-});
-
+  try {
+    const { data, error } = await supabase
+      .from('attendance')
+      .insert([{ student_id: studentId, name, status, timestamp: time }]);
+    if (error) throw error;
+    alert("Attendance Saved");
+  } catch (err) {
+    console.error(err);
+    alert("Failed to save attendance");
+  }
 }
 
 </script>

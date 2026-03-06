@@ -8,6 +8,8 @@
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode"></script>
+  <!-- supabase client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
   <style>
     /* --- Modern Tech Theme & Reset --- */
@@ -214,7 +216,7 @@
       <h3>Quick Attendance</h3>
       <form id="attendanceForm">
         <input type="text" id="studentId" placeholder="Enter Student ID" required />
-        <input type="text" id="Name" placeholder="Name" required />
+        <input type="text" id="name" placeholder="Name" required />
         <select id="status">
           <option value="Present">Present</option>
           <option value="Absent">Absent</option>
@@ -280,60 +282,53 @@
   </section>
 
   <script>
+    const SUPABASE_URL = 'https://larwsqghepyjtxbhgdfr.supabase.co'; 
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxhcndzcWdoZXB5anR4YmhnZGZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MDE0MzksImV4cCI6MjA4ODM3NzQzOX0.bZucFYWv1nzaNernoNqhtsq0U7o2bXGX9bD9clv8jmU';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     // 1. QR Generation
-function generateQR() {
+    function generateQR() {
+      const input = document.getElementById('sessionInput').value;
+      const qrDiv = document.getElementById('qrcode');
+      qrDiv.innerHTML = "";
+      if (input) {
+        new QRCode(qrDiv, { text: input, width: 200, height: 200 });
+      } else {
+        alert("Please enter a Student ID");
+      }
+    }
 
-  const input = document.getElementById('sessionInput').value;
-  const qrDiv = document.getElementById('qrcode');
-
-  // Clear previous QR
-  qrDiv.innerHTML = "";
-
-  if(input){
-
-    const qrText = input;
-
-    new QRCode(qrDiv,{
-      text: qrText,
-      width: 200,
-      height: 200
-    });
-
-  } else {
-
-    alert("Please enter a Student ID");
-
-  }
-
-}
-    // 2. Attendance Logic (send to backend)
+    // 2. Attendance Logic (Supabase)
     function addRow(record) {
       const tableBody = document.getElementById('attendanceTableBody');
-      const timeString = record.timestamp
-        ? new Date(record.timestamp).toLocaleString()
+      const timeString = record.created_at
+        ? new Date(record.created_at).toLocaleString()
         : new Date().toLocaleString();
-      const row = `<tr><td>${record.student_id || record.studentId}</td><td>${record.name}</td><td>${record.status}</td><td>${timeString}</td></tr>`;
+      const row = `<tr><td>${record.student_id}</td><td>${record.name}</td><td>${record.status}</td><td>${timeString}</td></tr>`;
       tableBody.innerHTML += row;
     }
 
-    document.getElementById('attendanceForm').addEventListener('submit', async function(e) {
+    document.getElementById('attendanceForm').addEventListener('submit', async function (e) {
       e.preventDefault();
       const id = document.getElementById('studentId').value.trim();
-      const name = document.getElementById('Name').value.trim();
+      const name = document.getElementById('name').value.trim();
       const status = document.getElementById('status').value;
       const time = new Date().toISOString();
 
       if (!id) return;
-
       try {
-        const resp = await fetch('/attendance', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ studentId: id, name, status, time })
-        });
-        if (!resp.ok) throw new Error('Network response was not ok');
-        const saved = await resp.json();
-        addRow(saved);
+        const { data, error } = await supabaseClient
+          .from('attendance')
+          .insert([{ student_id: id, name, status, created_at: time }]);
+        if (error) throw error;
+        console.log(data);
+        const record ={
+          student_id: id,
+          name,
+          status,
+          created_at: time
+        }
+        addRow(record);
         alert("✅ Attendance Marked!");
         this.reset();
       } catch (err) {
@@ -342,19 +337,20 @@ function generateQR() {
       }
     });
 
-    // load existing attendance when dashboard becomes visible or on page load
     window.addEventListener('DOMContentLoaded', async () => {
       try {
-        const resp = await fetch('/attendance');
-        if (!resp.ok) throw new Error('Failed to fetch records');
-        const data = await resp.json();
+        const { data, error } = await supabaseClient
+          .from('attendance')
+          .select('*')
+          .order('created_at', { ascending: true });
+        if (error) throw error;
         data.forEach(addRow);
       } catch (err) {
         console.error('could not load records', err);
       }
     });
 
-    // 3. Geolocation Verification
+    // 3. Geolocation Verification (unchanged)
     function verifyLocation() {
       const locDisplay = document.getElementById('locationText');
       if (navigator.geolocation) {
@@ -372,28 +368,21 @@ function generateQR() {
       }
     }
 
-    // 4. Download Table as CSV
+    // 4. Download Table as CSV (unchanged)
     function downloadCSV() {
       const table = document.getElementById("attendanceTableMain");
       let csv = [];
-      
-      // Get Headers
       const headers = Array.from(table.querySelectorAll("th")).map(th => th.innerText);
       csv.push(headers.join(","));
-
-      // Get Rows
       const rows = table.querySelectorAll("tbody tr");
       if (rows.length === 0) {
         alert("No data available to download!");
         return;
       }
-
       rows.forEach(row => {
         const rowData = Array.from(row.querySelectorAll("td")).map(td => td.innerText);
         csv.push(rowData.join(","));
       });
-
-      // Create File
       const csvContent = "data:text/csv;charset=utf-8," + csv.join("\n");
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement("a");
@@ -404,9 +393,8 @@ function generateQR() {
       document.body.removeChild(link);
     }
 
-    // 5. QR Scanner
+    // 5. QR Scanner (uses Supabase insert)
     const html5QrCode = new Html5Qrcode("reader");
-
     function startScanning() {
       document.getElementById("reader").style.display = "block";
       Html5Qrcode.getCameras().then(devices => {
@@ -414,29 +402,23 @@ function generateQR() {
           html5QrCode.start(
             devices[0].id,
             { fps: 10, qrbox: 250 },
-            qrCodeMessage => {
-              // Mark attendance for scanned student ID
+            async qrCodeMessage => {
               const studentId = qrCodeMessage.trim();
               const name = "Scanned Student";
               const status = "Present";
               const time = new Date().toISOString();
-
-              fetch('/attendance', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ studentId, name, status, time })
-              }).then(resp => {
-                if (!resp.ok) throw new Error('Network response not ok');
-                return resp.json();
-              }).then(saved => {
-                addRow(saved);
+              try {
+                const { data, error } = await supabaseClient
+                  .from('attendance')
+                  .insert([{ student_id: studentId, name, status, created_at: time }]);
+                if (error) throw error;
+                addRow(data[0]);
                 document.getElementById("scanResult").innerText = "✅ Attendance Marked for: " + studentId;
                 document.getElementById("reader").style.display = "none";
-              }).catch(err => {
+              } catch (err) {
                 console.error(err);
                 document.getElementById("scanResult").innerText = "❌ Failed to mark attendance for: " + studentId;
-              });
-
+              }
               html5QrCode.stop();
             }
           );

@@ -2,34 +2,30 @@
 
 This project is a static front-end that now includes a Node/Express backend connected to NeonDB (PostgreSQL) for storing attendance records.
 
-## Backend Setup
+## Supabase Setup
 
-1. **Install dependencies**
-   ```bash
-   cd backend
-   npm install
+This version no longer requires a backend server; all data is stored directly in Supabase.
+
+1. **Create a Supabase project** at [app.supabase.com](https://app.supabase.com) and note the project URL and anon key.
+2. **Create a table** named `attendance` with at least the following columns:
+   - `id` (serial primary key)
+   - `student_id` (text)
+   - `name` (text)
+   - `status` (text)
+   - `timestamp` (timestamptz, default `now()`)
+3. Copy your **project URL** and **anon key** into the placeholder values at the top of `QR.html` and `abc.html`:
+   ```js
+   const SUPABASE_URL = '<YOUR_SUPABASE_URL>';
+   const SUPABASE_ANON_KEY = '<YOUR_SUPABASE_ANON_KEY>';
    ```
-
-2. **Configure environment**
-   - Copy `.env.example` to `.env`
-   - Fill in your Neon connection URL (`NEON_DATABASE_URL`).
-
-3. **Start the server**
-   ```bash
-   npm run start   # or npm run dev if you install nodemon globally
-   ```
-   The server listens on port `3000` by default and serves the static HTML/JS from the project root.
-
-4. **Table creation**
-   - On startup the server will create the `attendance` table if it does not exist. No manual migration needed.
 
 ## Front-end changes
 
-- The attendance form now sends a `POST` request to `/attendance` instead of manipulating local state.
-- Existing attendance entries are fetched (`GET /attendance`) on page load and displayed in the dashboard table.
-- CSV download still works from DOM data.
-- QR codes are generated for student IDs (not session links).
-- Scanning a QR code (via the "Start Scanning" button) automatically marks attendance for the scanned student ID.
+- Attendance form and scanner now communicate with Supabase using the JavaScript client.
+- Records are fetched from Supabase on page load and displayed in the dashboard table.
+- CSV download continues to work based on DOM content.
+- QR generator produces codes for student IDs as before.
+- Scanning a QR code automatically inserts a new row into the Supabase table.
 
 ## NeonDB Integration
 
