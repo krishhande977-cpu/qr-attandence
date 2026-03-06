@@ -291,7 +291,7 @@
       const input = document.getElementById('sessionInput').value;
       const qrDiv = document.getElementById('qrcode');
       qrDiv.innerHTML = "";
-       const attendanceLink = "https://krishhande977-cpu.github.io/qr-attandence/abc.html?session=" + input;
+       const attendanceLink = "https://qr-attendanc.netlify.app/abc.html?session=" + input;
       if (input) {
         new QRCode(qrDiv, { text: attendanceLink, width: 200, height: 200 });
       } else {
