@@ -8,8 +8,6 @@
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode"></script>
-  <!-- supabase client -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
   <style>
     /* --- Modern Tech Theme & Reset --- */
@@ -282,10 +280,6 @@
   </section>
 
   <script>
-    const SUPABASE_URL = 'https://larwsqghepyjtxbhgdfr.supabase.co'; 
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxhcndzcWdoZXB5anR4YmhnZGZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MDE0MzksImV4cCI6MjA4ODM3NzQzOX0.bZucFYWv1nzaNernoNqhtsq0U7o2bXGX9bD9clv8jmU';
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
     // 1. QR Generation
     function generateQR() {
       const input = document.getElementById('sessionInput').value;
@@ -314,21 +308,16 @@
       const id = document.getElementById('studentId').value.trim();
       const name = document.getElementById('name').value.trim();
       const status = document.getElementById('status').value;
-      const time = new Date().toISOString();
 
       if (!id) return;
       try {
-        const { data, error } = await supabaseClient
-          .from('attendance')
-          .insert([{ student_id: id, name, status, created_at: time }]);
-        if (error) throw error;
-        console.log(data);
-        const record ={
-          student_id: id,
-          name,
-          status,
-          created_at: time
-        }
+        const res = await fetch('/api/attendance', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ student_id: id, name, status }),
+        });
+        if (!res.ok) throw new Error(await res.text());
+        const record = await res.json();
         addRow(record);
         alert("✅ Attendance Marked!");
         this.reset();
@@ -340,11 +329,9 @@
 
     window.addEventListener('DOMContentLoaded', async () => {
       try {
-        const { data, error } = await supabaseClient
-          .from('attendance')
-          .select('*')
-          .order('created_at', { ascending: true });
-        if (error) throw error;
+        const res = await fetch('/api/attendance');
+        if (!res.ok) throw new Error('Failed to fetch');
+        const data = await res.json();
         data.forEach(addRow);
       } catch (err) {
         console.error('could not load records', err);
@@ -407,13 +394,15 @@
               const studentId = qrCodeMessage.trim();
               const name = "Scanned Student";
               const status = "Present";
-              const time = new Date().toISOString();
               try {
-                const { data, error } = await supabaseClient
-                  .from('attendance')
-                  .insert([{ student_id: studentId, name, status, created_at: time }]);
-                if (error) throw error;
-                addRow(data[0]);
+                const res = await fetch('/api/attendance', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ student_id: studentId, name, status }),
+                });
+                if (!res.ok) throw new Error(await res.text());
+                const record = await res.json();
+                addRow(record);
                 document.getElementById("scanResult").innerText = "✅ Attendance Marked for: " + studentId;
                 document.getElementById("reader").style.display = "none";
               } catch (err) {
